@@ -22,7 +22,7 @@ RVG_renegadeLocationName = "";
 RVG_renegadeLastCleared  = -99999;
 RVG_renegadeCrate        = objNull;
 
-sleep 30;
+sleep 600;
 
 [] spawn {
 
