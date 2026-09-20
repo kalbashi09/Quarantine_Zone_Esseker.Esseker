@@ -1,0 +1,76 @@
+class Header {
+    gameType = "Coop";
+    minPlayers = 1;
+    maxPlayers = 8;
+    playerCountMultipleOf = 1;
+};
+
+respawn = "BASE";
+respawnDelay = 10;
+respawnOnStart = 0;
+respawnButton = 1;
+
+class CfgFunctions {
+
+    class RVG {
+
+        class Core {
+
+            file = "scripts";
+
+            class applyLoadout {};
+            class spawnPlayerTeammates {};
+            class teammateLeash {};
+            class teammateWatchdog {};
+        };
+
+        // =============================================================
+        // Mission Generator
+        // =============================================================
+
+        class MissionGenerator {
+
+            file = "MissionGenerator";
+
+            class init {};
+            class scanLocations {};
+            class generateMission {};
+        };
+
+        // =============================================================
+        // Mission Types
+        // =============================================================
+
+        class Missions {
+
+            file = "MissionGenerator\missions";
+
+            class rescue {};
+            class investigate {};
+            class cache {};
+        };
+
+        class Events
+        {
+            file = "EventGenerator";
+
+            // class init {};
+            class supplyDrop {};
+            class roadblock {};
+            class heli {};
+        };
+
+        class WorldGenerator {
+            file = "WorldGenerator";
+            class worldInit {};
+        };
+
+        class WorldEnemies {
+            file = "WorldGenerator\enemies";
+            class buildRenegadeBase {};
+            class spawnGarrison {};
+            class spawnRoamer {};
+            class spawnReinforcements {};
+        };
+    };
+};
