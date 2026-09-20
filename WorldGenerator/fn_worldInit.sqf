@@ -151,7 +151,7 @@ sleep 600;
                         RVG_renegadeBasePos
                     ];
 
-                    [format ["RENEGADE CAMP: Hostiles reported near %1.", RVG_renegadeLocationName]]
+                    [format ["BANDIT CAMP: Hostiles reported near %1.", RVG_renegadeLocationName]]
                         remoteExec ["systemChat", 0];
                 } else {
                     diag_log "=== RVG WorldGenerator: No valid base location available ===";
