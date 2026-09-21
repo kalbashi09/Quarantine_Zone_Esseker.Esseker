@@ -1,17 +1,29 @@
 RVG_SupplyWeapons = [
+    // Rifles
     "arifle_MX_F",
     "arifle_MXC_F",
     "arifle_MX_SW_F",
     "CUP_arifle_M4A1",
-    "CUP_arifle_AK74"
+    "CUP_arifle_AK74",
+
+    // Pistols
+    "hgun_P07_F",
+    "hgun_ACPC2_F",
+    "CUP_hgun_M9"
 ];
 
 RVG_SupplyMagazines = [
+    // Rifle magazines
     "30Rnd_65x39_caseless_mag",
     "100Rnd_65x39_caseless_mag",
     "30Rnd_9x21_Mag",
     "CUP_30Rnd_556x45_Stanag",
-    "CUP_30Rnd_545x39_AK_M"
+    "CUP_30Rnd_545x39_AK_M",
+
+    // Pistol magazines
+    "16Rnd_9x21_Mag",
+    "9Rnd_45ACP_Mag",
+    "CUP_15Rnd_9x19_M9"
 ];
 
 RVG_SupplyItems = [
@@ -20,7 +32,7 @@ RVG_SupplyItems = [
     "Medikit",
     "ACE_earplugs",
 
-    // ACE Bandages — the workhorses
+    // ACE Bandages
     "ACE_fieldDressing",
     "ACE_packingBandage",
     "ACE_elasticBandage",
@@ -37,7 +49,7 @@ RVG_SupplyItems = [
     "ACE_tourniquet",
     "ACE_splint",
 
-    // ACE IVs — Saline (most common)
+    // ACE IVs — Saline
     "ACE_salineIV",
     "ACE_salineIV_500",
     "ACE_salineIV_250",
@@ -66,14 +78,14 @@ RVG_SupplyItems = [
     "rvg_Chicken_Meat_Cooked",
     "rvg_Rabbit_Meat_Cooked",
     "rvg_Sheep_Meat_Cooked",
-    
+
     // Ravage consumables — Thirst
     "rvg_canteenPurified",
     "rvg_plasticBottlePurified",
     "rvg_milk",
     "rvg_spirit",
     "rvg_franta",
-    
+
     // Survival tools
     "rvg_canOpener",
     "rvg_guttingKnife",
@@ -83,14 +95,20 @@ RVG_SupplyItems = [
 ];
 
 RVG_SupplyAttachments = [
+    // Rifle optics
     "optic_Holosight",
     "optic_MRCO",
     "optic_Hamr",
     "optic_ACO_grn",
+
+    // Rifle attachments
     "muzzle_snds_M",
     "muzzle_snds_65_TI_blk_F",
     "acc_pointer_IR",
-    "acc_flashlight"
+    "acc_flashlight",
+
+    // Pistol attachments
+    "acc_flashlight_pistol"
 ];
 
 RVG_SupplyEquipment = [

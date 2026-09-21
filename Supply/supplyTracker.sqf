@@ -35,7 +35,7 @@ diag_log "=== RVG SUPPLY: Arsenal containers found ===";
 // =====================================================
 
 {
-    BaseArsenalWeapons addWeaponCargoGlobal [_x, 8];
+    BaseArsenalWeapons addWeaponCargoGlobal [_x, 10];
 } forEach RVG_SupplyWeapons;
 
 
@@ -45,7 +45,7 @@ diag_log "=== RVG SUPPLY: Arsenal containers found ===";
 
 // Uniforms
 {
-    BaseArsenalEquipments addItemCargoGlobal [_x, 8];
+    BaseArsenalEquipments addItemCargoGlobal [_x, 10];
 } forEach [
     "U_B_CombatUniform_mcam",
     "U_B_CombatUniform_mcam_vest",
@@ -55,7 +55,7 @@ diag_log "=== RVG SUPPLY: Arsenal containers found ===";
 
 // Vests
 {
-    BaseArsenalEquipments addItemCargoGlobal [_x, 8];
+    BaseArsenalEquipments addItemCargoGlobal [_x, 10];
 } forEach [
     "V_PlateCarrier1_rgr",
     "V_PlateCarrier2_rgr",
@@ -65,7 +65,7 @@ diag_log "=== RVG SUPPLY: Arsenal containers found ===";
 
 // Headgear
 {
-    BaseArsenalEquipments addItemCargoGlobal [_x, 8];
+    BaseArsenalEquipments addItemCargoGlobal [_x, 10];
 } forEach [
     "H_HelmetB",
     "H_HelmetB_paint",
@@ -77,7 +77,7 @@ diag_log "=== RVG SUPPLY: Arsenal containers found ===";
 
 // Backpacks
 {
-    BaseArsenalEquipments addBackpackCargoGlobal [_x, 8];
+    BaseArsenalEquipments addBackpackCargoGlobal [_x, 10];
 } forEach [
     "B_AssaultPack_rgr",
     "B_AssaultPack_khk",
@@ -93,12 +93,12 @@ diag_log "=== RVG SUPPLY: Arsenal containers found ===";
 
 // Medical
 {
-    BaseArsenalEssentials addItemCargoGlobal [_x, 30];
+    BaseArsenalEssentials addItemCargoGlobal [_x, 40];
 } forEach RVG_SupplyItems;
 
 // Maps / tools / navigation
 {
-    BaseArsenalEssentials addItemCargoGlobal [_x, 10];
+    BaseArsenalEssentials addItemCargoGlobal [_x, 15];
 } forEach [
     "ItemMap",
     "ItemCompass",

@@ -94,11 +94,12 @@ class CfgFunctions {
 class RscTitles {
     class RVG_SurvivalHUD {
         idd = 8001;
-        duration = 1e10;         // ← ADD: required for cutRsc to persist
-        fadein = 0;              // ← ADD: no fade-in
-        fadeout = 0;             // ← ADD: no fade-out
+        duration = 1e10;
+        fadein = 0;
+        fadeout = 0;
         movingEnable = 0;
         enableSimulation = 1;
+
         onLoad   = "uiNamespace setVariable ['RVG_SurvivalHUD', _this select 0];";
         onUnload = "uiNamespace setVariable ['RVG_SurvivalHUD', nil];";
 
@@ -106,41 +107,47 @@ class RscTitles {
 
             class HungerBar : RscProgress {
                 type = 8;
-                style = 0;                                          // ← ADD
-                texture = "#(argb,8,8,3)color(1,1,1,1)";            // ← ADD (procedural white texture)
+                style = 0;
+                texture = "#(argb,8,8,3)color(1,1,1,1)";
                 idc = 8002;
+
                 colorFrame[] = {0, 0, 0, 0.6};
                 colorBar[]   = {1, 0.6, 0.2, 0.9};
-                x = 0.01 * safezoneW + safezoneX;   // tighter to edge
-                y = 0.01 * safezoneH + safezoneY;
-                w = 0.06 * safezoneW;               // 6% width (was 15%)
-                h = 0.012 * safezoneH;              // 1.2% height (was 2%)
+
+                x = 0.93 * safezoneW + safezoneX;
+                y = 0.93 * safezoneH + safezoneY;
+                w = 0.06 * safezoneW;
+                h = 0.012 * safezoneH;
             };
 
             class ThirstBar : RscProgress {
                 type = 8;
-                style = 0;                                          // ← ADD
-                texture = "#(argb,8,8,3)color(1,1,1,1)";            // ← ADD
+                style = 0;
+                texture = "#(argb,8,8,3)color(1,1,1,1)";
                 idc = 8004;
+
                 colorFrame[] = {0, 0, 0, 0.6};
                 colorBar[]   = {0.3, 0.6, 1, 0.9};
-                x = 0.01 * safezoneW + safezoneX;   // tighter to edge
-                y = 0.028 * safezoneH + safezoneY;
-                w = 0.06 * safezoneW;               // 6% width (was 15%)
-                h = 0.012 * safezoneH; 
+
+                x = 0.93 * safezoneW + safezoneX;
+                y = 0.948 * safezoneH + safezoneY;
+                w = 0.06 * safezoneW;
+                h = 0.012 * safezoneH;
             };
 
             class RadBar : RscProgress {
                 type = 8;
-                style = 0;                                          // ← ADD
-                texture = "#(argb,8,8,3)color(1,1,1,1)";            // ← ADD
+                style = 0;
+                texture = "#(argb,8,8,3)color(1,1,1,1)";
                 idc = 8006;
+
                 colorFrame[] = {0, 0, 0, 0.6};
                 colorBar[]   = {0.7, 1, 0.3, 0.9};
-                x = 0.01 * safezoneW + safezoneX;   // tighter to edge
-                y = 0.046 * safezoneH + safezoneY;
-                w = 0.06 * safezoneW;               // 6% width (was 15%)
-                h = 0.012 * safezoneH; 
+
+                x = 0.93 * safezoneW + safezoneX;
+                y = 0.966 * safezoneH + safezoneY;
+                w = 0.06 * safezoneW;
+                h = 0.012 * safezoneH;
             };
         };
     };

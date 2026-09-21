@@ -106,7 +106,7 @@ switch (_kit) do {
         _unit addWeapon _weapon;
 
         private _magsByWeapon = createHashMapFromArray [
-             ["CUP_hgun_M9",       "CUP_15Rnd_9x19_M9"],
+            ["CUP_hgun_M9",       "CUP_15Rnd_9x19_M9"],
             ["CUP_hgun_Colt1911", "CUP_7Rnd_45ACP_1911"],
             ["CUP_hgun_Compact",  "CUP_10Rnd_9x19_Compact"],
             ["sgun_HunterShotgun_01_F","2Rnd_12Gauge_Pellets"],

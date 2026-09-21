@@ -143,4 +143,44 @@ See `README.md` for the current required mod list and Workshop links.
 - CBA Team
 - Esseker (New) - Malcain
 
-Mission scripts and systems by TERRAble231.
+## v1.0.1
+
+### CHANGED
+
+- Save and Exit is now disabled. The mission's live scripts, AI systems,
+  and HUD cannot survive a save/load cycle, so saving is turned off to
+  prevent players from resuming into a broken state. Use Abort to exit.
+
+### TECHNICAL
+
+- Added enableSaving [false, false] to initServer.sqf
+
+### SAVE STATE - WORK IN PROGRESS
+
+- Save and load support is being worked on. The plan is to add recovery
+  handlers that restart the mission generator, world generator, event
+  scheduler, HUD, and AI systems when a saved mission is loaded.
+- Not ready yet. No ETA. For now, please use Abort when you want to stop
+  playing. Progress resets on next launch.
+- If you have experience with Arma save/load and want to help test,
+  leave a comment.
+
+## v1.0.2
+
+### CHANGED
+
+- Player loadout is now cleared on initial spawn to prevent loadout exploits.
+- Players now spawn with basic clothing only. Weapons, magazines, equipment, and medical supplies must be obtained from the Base Arsenal.
+
+### FIXED
+
+- Player death no longer ends the mission.
+- Added FOB respawn support with a 10-second respawn delay.
+- Respawn is now available after player death.
+- Player is re-homed into their private group after respawning.
+- Player teammates are restored after respawn.
+
+### TECHNICAL
+
+- Added proper FOB respawn configuration to description.ext.
+- Respawn now uses the Eden Respawn Position module with a 10-second respawn delay.
