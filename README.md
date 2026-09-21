@@ -1,6 +1,4 @@
-==============================================================================
-QUARANTINE ZONE - ESSEKER
-==============================================================================
+# QUARANTINE ZONE - ESSEKER
 
 A survival sandbox mission for Arma 3, built on top of the Ravage mod,
 set on the New Esseker map. Dynamic missions, ambient events, a persistent
