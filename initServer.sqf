@@ -2,6 +2,7 @@
 // =====================================================
 // RVG LIMITED ARSENAL
 // =====================================================
+enableSaving [false, false];
 
 diag_log "=== RVG ARSENAL: Loading configuration ===";
 

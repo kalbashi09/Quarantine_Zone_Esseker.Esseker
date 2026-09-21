@@ -93,8 +93,9 @@ switch (_kit) do {
         };
 
         private _weapons = [
-            "hgun_ACPC2_F",
-            "hgun_P07_F",
+            "CUP_hgun_M9",           // M9 Beretta — full-size, 15 rounds
+            "CUP_hgun_Colt1911",     // Colt 1911 — classic, 7 rounds, heavy hitter
+            "CUP_hgun_Compact",
             "sgun_HunterShotgun_01_F",
             "rhs_weap_akm",
             "rhs_weap_aks74",
@@ -105,8 +106,9 @@ switch (_kit) do {
         _unit addWeapon _weapon;
 
         private _magsByWeapon = createHashMapFromArray [
-            ["hgun_ACPC2_F","9Rnd_45ACP_Mag"],
-            ["hgun_P07_F","16Rnd_9x21_Mag"],
+             ["CUP_hgun_M9",       "CUP_15Rnd_9x19_M9"],
+            ["CUP_hgun_Colt1911", "CUP_7Rnd_45ACP_1911"],
+            ["CUP_hgun_Compact",  "CUP_10Rnd_9x19_Compact"],
             ["sgun_HunterShotgun_01_F","2Rnd_12Gauge_Pellets"],
             ["rhs_weap_akm","rhs_30Rnd_762x39mm"],
             ["rhs_weap_aks74","rhs_30Rnd_545x39_AK"],
@@ -121,9 +123,9 @@ switch (_kit) do {
         };
 
         if (random 1 < 0.3) then {
-            private _sidearm = selectRandom ["hgun_ACPC2_F","hgun_P07_F"];
+            private _sidearm = selectRandom ["CUP_hgun_M9","CUP_hgun_Colt1911"];
             _unit addWeapon _sidearm;
-            _unit addMagazine "9Rnd_45ACP_Mag";
+            _unit addMagazine (selectRandom ["CUP_15Rnd_9x19_M9","CUP_7Rnd_45ACP_1911"]);
         };
 
         if (random 1 < 0.5) then {

@@ -152,7 +152,7 @@ if (random 1 < 0.75) then {
 
 if (random 1 < 0.50) then {
     _crate addWeaponCargoGlobal [selectRandom [
-        "hgun_ACPC2_F","hgun_Rook40_F","hgun_P07_F"
+        "CUP_hgun_M9","CUP_hgun_Colt1911","CUP_hgun_Compact"
     ], 1];
 };
 
