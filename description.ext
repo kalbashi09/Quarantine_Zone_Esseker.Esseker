@@ -22,6 +22,8 @@ class CfgFunctions {
             class spawnPlayerTeammates {};
             class teammateLeash {};
             class teammateWatchdog {};
+            class validateClasses {}; 
+            class baseIntel {}; 
         };
 
         // =============================================================

@@ -15,9 +15,48 @@ RVG_SupplyMagazines = [
 ];
 
 RVG_SupplyItems = [
+    // Vanilla
     "FirstAidKit",
     "Medikit",
-	"ACE_earplugs"
+    "ACE_earplugs",
+
+    // ACE Bandages — the workhorses
+    "ACE_fieldDressing",
+    "ACE_packingBandage",
+    "ACE_elasticBandage",
+    "ACE_quikclot",
+
+    // ACE Injectors
+    "ACE_morphine",
+    "ACE_epinephrine",
+    "ACE_adenosine",
+    "ACE_atropine",
+    "ACE_painkillers",
+
+    // ACE Trauma
+    "ACE_tourniquet",
+    "ACE_splint",
+
+    // ACE IVs — Saline (most common)
+    "ACE_salineIV",
+    "ACE_salineIV_500",
+    "ACE_salineIV_250",
+
+    // ACE IVs — Blood & Plasma
+    "ACE_bloodIV",
+    "ACE_bloodIV_500",
+    "ACE_bloodIV_250",
+    "ACE_plasmaIV",
+    "ACE_plasmaIV_500",
+    "ACE_plasmaIV_250",
+
+    // ACE Surgical
+    "ACE_surgicalKit",
+    "ACE_suture",
+    "ACE_personalAidKit",
+
+    // ACE Misc
+    "ACE_bodyBag"
 ];
 
 RVG_SupplyAttachments = [

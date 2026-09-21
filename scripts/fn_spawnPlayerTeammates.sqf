@@ -3,6 +3,10 @@
 // =========================================================================
 // Idempotent: safe to call every tick. Only spawns missing roster slots.
 // Dead, untagged, or duplicate units in the group are removed each pass.
+//
+// Mission units (survivors, escorts, HVTs) are tagged "RVG_missionUnit"
+// and skipped entirely — they're not part of the roster and must not be
+// deleted by the reconciler.
 // =========================================================================
 
 params ["_grp", "_pos"];
@@ -36,7 +40,11 @@ if (_roster isEqualTo []) then {
 private _aliveIdx = [];
 private _toDelete = [];
 {
-    if (!isNull _x && { !isPlayer _x }) then {
+    if (
+        !isNull _x &&
+        { !isPlayer _x } &&
+        { !(_x getVariable ["RVG_missionUnit", false]) }   // ← skip mission units
+    ) then {
         private _i = _x getVariable ["RVG_rosterIdx", -1];
         if (alive _x && { _i >= 0 } && { _i < count _roster } && { !(_i in _aliveIdx) }) then {
             _aliveIdx pushBack _i;
@@ -66,11 +74,18 @@ private _fnc_kitForClass = {
         private _unitPos = _pos getPos [4 + (_forEachIndex * 2), (_forEachIndex * 120)];
         private _u = _grp createUnit [_class, _unitPos, [], 0, "NONE"];
 
-        // Identity (JIP-safe).
-        [_u, _name]    remoteExec ["setName", 0, _u];
-        [_u, _face]    remoteExec ["setFace", 0, _u];
-        [_u, _speaker] remoteExec ["setSpeaker", 0, _u];
-        [_u, _pitch]   remoteExec ["setPitch", 0, _u];
+        // Identity (JIP-safe). Delayed briefly so the unit's network ID
+        // has fully propagated before we use it as a JIP target.
+        [_u, _name, _face, _speaker, _pitch] spawn {
+            params ["_u", "_name", "_face", "_speaker", "_pitch"];
+            sleep 0.1;
+            if (isNull _u) exitWith {};
+
+            [_u, _name]    remoteExec ["setName", 0, _u];
+            [_u, _face]    remoteExec ["setFace", 0, _u];
+            [_u, _speaker] remoteExec ["setSpeaker", 0, _u];
+            [_u, _pitch]   remoteExec ["setPitch", 0, _u];
+        };
 
         // Gear — derive kit from class, then apply.
         private _kit = [_class] call _fnc_kitForClass;

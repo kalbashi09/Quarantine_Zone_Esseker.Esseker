@@ -1,6 +1,6 @@
 // =====================================================
 // RVG EVENT - SUPPLY DROP
-// CH-67 Huron delivers a physical cargo net
+// RHS CH-47 Chinook delivers a physical cargo net
 // =====================================================
 
 diag_log "=== RVG EVENT: Supply drop starting ===";
@@ -27,6 +27,12 @@ if (_locations isEqualTo []) exitWith {
 // CONVERT LOCATIONS TO POSITION DATA
 // =====================================================
 
+// Blacklisted locations — excluded from event spawn selection.
+private _blacklist = [
+    "Gromada",
+    "Lower Esseker"
+];
+
 private _locationData = [];
 
 {
@@ -35,7 +41,8 @@ private _locationData = [];
 
     if (
         !(_locationName isEqualTo "") &&
-        !(_locationPos isEqualTo [0,0,0])
+        !(_locationPos isEqualTo [0,0,0]) &&
+        { !(_locationName in _blacklist) }
     ) then {
 
         _locationData pushBack [
@@ -125,16 +132,10 @@ _spawnPos set [
 ];
 
 // =====================================================
-// CREATE CH-67 HURON
+// CREATE RHS CHINOOK HELICOPTER
 // =====================================================
 
-private _heli = createVehicle [
-    "B_Heli_Transport_03_F",
-    _spawnPos,
-    [],
-    0,
-    "FLY"
-];
+private _heli = createVehicle ["RHS_CH_47F_cargo", _spawnPos, [], 0, "FLY"];
 
 _heli setDir _spawnDirection;
 _heli setPosATL _spawnPos;
@@ -187,28 +188,90 @@ clearItemCargoGlobal _cargo;
 clearBackpackCargoGlobal _cargo;
 
 // =====================================================
-// ADD SUPPLIES
+// ADD SUPPLIES — RANDOMIZED
+// =====================================================
+// Two layers of randomization:
+//   1. Which items from each pool are included (subset pick)
+//   2. How many of each item (count roll)
+// Medical is always present so a drop is never useless.
 // =====================================================
 
-{
-    _cargo addWeaponCargoGlobal [_x, 2];
-} forEach RVG_SupplyWeapons;
+// Helper: pick N unique random entries from a pool.
+private _fnc_pickRandom = {
+    params ["_pool", "_count"];
+    private _copy = +_pool;
+    private _picked = [];
+    for "_i" from 1 to _count do {
+        if (_copy isEqualTo []) exitWith {};
+        private _idx = floor random (count _copy);
+        _picked pushBack (_copy select _idx);
+        _copy deleteAt _idx;
+    };
+    _picked
+};
 
+// ---- ALWAYS PRESENT: medical basics --------------------------------
+// Guarantees the drop is never a waste of a trip.
+_cargo addItemCargoGlobal ["FirstAidKit",  5 + floor random 6];       // 5-10
+_cargo addItemCargoGlobal ["ACE_fieldDressing",  8 + floor random 8]; // 8-15
+_cargo addItemCargoGlobal ["ACE_packingBandage", 5 + floor random 6]; // 5-10
+_cargo addItemCargoGlobal ["ACE_morphine", 3 + floor random 3];       // 3-5
+
+// ---- ALWAYS PRESENT: 1-2 mags of each type -------------------------
 {
-    _cargo addMagazineCargoGlobal [_x, 20];
+    _cargo addMagazineCargoGlobal [_x, 6 + floor random 10];  // 6-15 each
 } forEach RVG_SupplyMagazines;
 
-{
-    _cargo addItemCargoGlobal [_x, 10];
-} forEach RVG_SupplyItems;
+// ---- RANDOM: extra medical supplies --------------------------------
+private _medicalExtras = [
+    "Medikit",
+    "ACE_elasticBandage",
+    "ACE_quikclot",
+    "ACE_epinephrine",
+    "ACE_adenosine",
+    "ACE_tourniquet",
+    "ACE_splint",
+    "ACE_salineIV_500",
+    "ACE_salineIV",
+    "ACE_bloodIV_500"
+];
 
+private _pickedMeds = [_medicalExtras, 2 + floor random 3] call _fnc_pickRandom;  // 2-4 items
 {
-    _cargo addItemCargoGlobal [_x, 5];
-} forEach RVG_SupplyAttachments;
+    _cargo addItemCargoGlobal [_x, 2 + floor random 4];  // 2-5 of each
+} forEach _pickedMeds;
 
+// ---- RANDOM: weapons (2-4 of 5) ------------------------------------
+private _pickedWeapons = [RVG_SupplyWeapons, 2 + floor random 3] call _fnc_pickRandom;
 {
-    _cargo addMagazineCargoGlobal [_x, 10];
-} forEach RVG_SupplyGrenades;
+    _cargo addWeaponCargoGlobal [_x, 1 + floor random 2];  // 1-2 of each
+} forEach _pickedWeapons;
+
+// ---- RANDOM: attachments (3-6 of 8) --------------------------------
+private _pickedAtts = [RVG_SupplyAttachments, 3 + floor random 4] call _fnc_pickRandom;
+{
+    _cargo addItemCargoGlobal [_x, 1 + floor random 3];  // 1-3 of each
+} forEach _pickedAtts;
+
+// ---- RANDOM: grenades (2-4 types, random counts) -------------------
+private _pickedGrenades = [RVG_SupplyGrenades, 2 + floor random 3] call _fnc_pickRandom;
+{
+    _cargo addMagazineCargoGlobal [_x, 2 + floor random 5];  // 2-6 of each
+} forEach _pickedGrenades;
+
+// ---- RANDOM: one special item (50% chance) -------------------------
+if (random 1 < 0.5) then {
+    private _specials = [
+        "ACE_surgicalKit",
+        "ACE_personalAidKit",
+        "ACE_bodyBag",
+        "ToolKit",
+        "MineDetector",
+        "NVGoggles",
+        "Binocular"
+    ];
+    _cargo addItemCargoGlobal [selectRandom _specials, 1];
+};
 
 // =====================================================
 // ATTACH CARGO TO HELICOPTER
@@ -216,7 +279,7 @@ clearBackpackCargoGlobal _cargo;
 
 _cargo attachTo [
     _heli,
-    [0, 0, -7]
+    [0, 0, -8]
 ];
 
 diag_log "=== RVG EVENT: Cargo attached to helicopter ===";

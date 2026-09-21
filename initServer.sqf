@@ -29,6 +29,8 @@ diag_log "=== RVG EVENTS: Generator started ===";
 // player and contains no player.
 // =========================================================================
 
+[] spawn RVG_fnc_validateClasses;
+
 [] spawn {
     while { true } do {
         sleep 30;

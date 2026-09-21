@@ -70,8 +70,10 @@ switch (_kit) do {
     // ---------------------------------------------------------------
     case "bandit": {
         _unit forceAddUniform (selectRandom [
-            "U_C_Man_casual_1_F","U_C_Man_casual_2_F","U_C_Man_casual_3_F",
-            "U_C_Man_casual_4_F","U_C_Man_casual_5_F","U_C_Man_casual_6_F"
+            "CUP_U_C_Citizen_01", "CUP_U_C_Citizen_02", "CUP_U_C_Citizen_03", "CUP_U_C_Citizen_04",
+            "CUP_U_C_Villager_01", "CUP_U_C_Villager_02", "CUP_U_C_Villager_03", "CUP_U_C_Villager_04",
+            "CUP_U_C_Woodlander_01", "CUP_U_C_Woodlander_02", "CUP_U_C_Woodlander_03", "CUP_U_C_Woodlander_04",
+            "CUP_U_C_Rocker_01", "CUP_U_C_Rocker_02", "CUP_U_C_Rocker_03", "CUP_U_C_Rocker_04"
         ]);
 
         if (random 1 < 0.4) then {
@@ -92,11 +94,10 @@ switch (_kit) do {
 
         private _weapons = [
             "hgun_ACPC2_F",
-            "hgun_Rook40_F",
             "hgun_P07_F",
             "sgun_HunterShotgun_01_F",
-            "arifle_AKM_F",
-            "arifle_AKS_F",
+            "rhs_weap_akm",
+            "rhs_weap_aks74",
             "SMG_02_F",
             "SMG_01_F"
         ];
@@ -104,13 +105,11 @@ switch (_kit) do {
         _unit addWeapon _weapon;
 
         private _magsByWeapon = createHashMapFromArray [
-            ["hgun_Pistol_heavy_02_F","6Rnd_45ACP_Cylinder"],
             ["hgun_ACPC2_F","9Rnd_45ACP_Mag"],
-            ["hgun_Rook40_F","16Rnd_9x21_Mag"],
             ["hgun_P07_F","16Rnd_9x21_Mag"],
             ["sgun_HunterShotgun_01_F","2Rnd_12Gauge_Pellets"],
-            ["arifle_AKM_F","30Rnd_762x39_Mag_F"],
-            ["arifle_AKS_F","30Rnd_545x39_Mag_F"],
+            ["rhs_weap_akm","rhs_30Rnd_762x39mm"],
+            ["rhs_weap_aks74","rhs_30Rnd_545x39_AK"],
             ["SMG_02_F","30Rnd_9x21_Mag_SMG_02"],
             ["SMG_01_F","30Rnd_45ACP_Mag_SMG_01"]
         ];
@@ -122,7 +121,7 @@ switch (_kit) do {
         };
 
         if (random 1 < 0.3) then {
-            private _sidearm = selectRandom ["hgun_ACPC2_F","hgun_Rook40_F"];
+            private _sidearm = selectRandom ["hgun_ACPC2_F","hgun_P07_F"];
             _unit addWeapon _sidearm;
             _unit addMagazine "9Rnd_45ACP_Mag";
         };

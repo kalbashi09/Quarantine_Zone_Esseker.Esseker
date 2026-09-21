@@ -42,19 +42,33 @@ _marker setMarkerColor "ColorOrange";
 // Find hidden cache position
 // =========================================================================
 
-private _cachePos =
-    [
-        _locationPos,
-        75,
-        250,
-        5,
-        0,
-        0.5,
+// Manual safe-position search. BIS_fnc_findSafePos can spiral kilometres
+// off-map when it can't find a valid spot within the requested radius.
+// This loop guarantees the position stays within 75-200m of the marker.
+private _cachePos = [];
+
+for "_attempt" from 1 to 20 do {
+    if (!(_cachePos isEqualTo [])) exitWith {};
+
+    private _bearing  = random 360;
+    private _distance = 75 + random 125;
+
+    private _testPos = [
+        (_locationPos select 0) + (sin _bearing * _distance),
+        (_locationPos select 1) + (cos _bearing * _distance),
         0
-    ] call BIS_fnc_findSafePos;
+    ];
+
+    private _nearBuildings = nearestTerrainObjects [_testPos, ["BUILDING"], 5];
+
+    if (!(surfaceIsWater _testPos) && { _nearBuildings isEqualTo [] }) then {
+        _cachePos = _testPos;
+    };
+};
 
 if (_cachePos isEqualTo []) then {
     _cachePos = _locationPos;
+    diag_log "RVG Cache: Using fallback position (no clear spot in 20 attempts).";
 };
 
 

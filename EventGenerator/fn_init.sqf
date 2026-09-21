@@ -7,21 +7,19 @@
 
 diag_log "=== RVG EVENTS: Scheduler starting ===";
 
-private _events = [
-    "RVG_fnc_heli",
-    "RVG_fnc_supplyDrop",
-    "RVG_fnc_roadblock"
-];
-
-private _lastEvent = "";
-
 [] spawn {
+    private _events = [
+        "RVG_fnc_heli",
+        "RVG_fnc_supplyDrop",
+        "RVG_fnc_roadblock"
+    ];
+
+    private _lastEvent = "";
+
     // First event: 3-8 minutes in.
     sleep (180 + random 300);
 
     while { true } do {
-        // Build a candidate pool excluding the last-fired event.
-        // First iteration: _lastEvent is "" so nothing is excluded.
         private _pool = _events select { _x != _lastEvent };
 
         private _fnc = selectRandom _pool;

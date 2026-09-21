@@ -86,8 +86,8 @@ clearBackpackCargoGlobal _crate;
 
 // Weapons — common pool (bandit-plausible)
 private _commonWeapons = [
-    "arifle_AKM_F",
-    "arifle_AKS_F",
+    "rhs_weap_akm",
+	"rhs_weap_aks74",
     "arifle_Mk20_F",
     "arifle_Mk20C_F",
     "arifle_TRG20_F",

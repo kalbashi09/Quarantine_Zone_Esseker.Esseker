@@ -37,15 +37,31 @@ _marker setMarkerColor "ColorBlue";
 _marker setMarkerText  format ["INVESTIGATE: %1", _locationName];
 
 // ---- Camp position ------------------------------------------------------
-private _objectivePos = [
-    _locationPos,
-    75, 200,
-    5,
-    0, 0.5, 0
-] call BIS_fnc_findSafePos;
+// Manual safe-position search (avoids BIS_fnc_findSafePos spiral-out bug).
+private _objectivePos = [];
+
+for "_attempt" from 1 to 20 do {
+    if (!(_objectivePos isEqualTo [])) exitWith {};
+
+    private _bearing  = random 360;
+    private _distance = 75 + random 125;
+
+    private _testPos = [
+        (_locationPos select 0) + (sin _bearing * _distance),
+        (_locationPos select 1) + (cos _bearing * _distance),
+        0
+    ];
+
+    private _nearBuildings = nearestTerrainObjects [_testPos, ["BUILDING"], 5];
+
+    if (!(surfaceIsWater _testPos) && { _nearBuildings isEqualTo [] }) then {
+        _objectivePos = _testPos;
+    };
+};
 
 if (_objectivePos isEqualTo []) then {
     _objectivePos = _locationPos;
+    diag_log "RVG Investigate: Using fallback position (no clear spot in 20 attempts).";
 };
 
 diag_log format [
@@ -72,7 +88,7 @@ private _tent = ["Land_TentA_F", 3.5, 45, 225] call _fnc_place;
 
 // Campfire — burning fire + ambient smoke wisp. Lit via inflame so it
 // produces fire particles and a light plume from the logs.
-private _fire = ["Land_Campfire_F", 1.5, 200, random 360] call _fnc_place;
+private _fire = ["Land_Campfire_F", 4.5, 200, random 360] call _fnc_place;
 _fire inflame true;
 
 // Crate — the phone sits on top of this.

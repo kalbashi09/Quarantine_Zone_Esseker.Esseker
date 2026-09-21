@@ -6,8 +6,8 @@
 //   - Every 20-30 min: 40% chance to dispatch a 5-man roamer squad.
 //   - When garrison is wiped: clean up base, wait 25 min, spawn another.
 //
-// No marker, no BIS task. Only systemChat messages announce base spawn
-// and clear.
+// No marker, no BIS task. systemChat announces spawn and clear. A diary
+// record under "Field Intel" logs each camp with its grid coordinates.
 // =========================================================================
 
 if (!isServer) exitWith {};
@@ -22,7 +22,7 @@ RVG_renegadeLocationName = "";
 RVG_renegadeLastCleared  = -99999;
 RVG_renegadeCrate        = objNull;
 
-sleep 600;
+sleep 20;
 
 [] spawn {
 
@@ -153,6 +153,10 @@ sleep 600;
 
                     [format ["BANDIT CAMP: Hostiles reported near %1.", RVG_renegadeLocationName]]
                         remoteExec ["systemChat", 0];
+
+                    // ---- Diary intel: log the base spawn for every player ---
+                    ["SPAWN", RVG_renegadeLocationName, RVG_renegadeBasePos]
+                        remoteExec ["RVG_fnc_baseIntel", 0, true];
                 } else {
                     diag_log "=== RVG WorldGenerator: No valid base location available ===";
                 };
@@ -174,6 +178,10 @@ sleep 600;
 
                 [format ["RENEGADE CAMP CLEARED: %1 is quiet.", RVG_renegadeLocationName]]
                     remoteExec ["systemChat", 0];
+
+                // ---- Diary intel: log the clear for every player --------
+                ["CLEAR", RVG_renegadeLocationName, RVG_renegadeBasePos]
+                    remoteExec ["RVG_fnc_baseIntel", 0, true];
 
                 // Clean up base objects — NOT the crate.
                 {

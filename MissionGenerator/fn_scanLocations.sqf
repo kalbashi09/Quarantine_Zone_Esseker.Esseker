@@ -37,6 +37,13 @@ private _locations = nearestLocations [
     worldSize
 ];
 
+// Blacklisted locations — terrain or layout makes these unsuitable for
+// mission spawns. Add more names as needed (must match `text` exactly).
+private _blacklist = [
+    "Gromada",
+    "Lower Esseker"
+];
+
 private _result = [];
 
 {
@@ -45,6 +52,7 @@ private _result = [];
 
     if (
         _name != "" &&
+        { !(_name in _blacklist) } &&
         { _pos distance2D _hqPos >= _minHQDistance }
     ) then {
 
