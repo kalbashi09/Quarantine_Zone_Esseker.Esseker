@@ -53,3 +53,35 @@ _myGrp setVariable ["RVG_ownerUID", getPlayerUID player, true];
         };
     };
 };
+
+// =====================================================
+// Persistent Save / Load — 100m MissionHQ Radius
+// =====================================================
+
+// waitUntil { !isNull MissionHQ };
+
+// player addAction [
+//     "<t color='#55FF55'>Save Persistent</t>",
+//     {
+//         [player] remoteExec ["RVG_fnc_save", 2];
+//     },
+//     nil,
+//     1.5,
+//     true,
+//     true,
+//     "",
+//     "alive player && player distance MissionHQ <= 100"
+// ];
+
+// player addAction [
+//     "<t color='#55AAFF'>Load Persistent</t>",
+//     {
+//         [player] remoteExec ["RVG_fnc_load", 2];
+//     },
+//     nil,
+//     1.4,
+//     true,
+//     true,
+//     "",
+//     "alive player && player distance MissionHQ <= 100"
+// ];

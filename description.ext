@@ -34,6 +34,20 @@ class CfgFunctions {
             class survivalHUD {};   // ← HUD driver script
         };
 
+        // class SaveState {
+        //     file = "SaveState";
+
+        //     class save {};
+        //     class load {};
+        //     class collectPlayer {};
+        //     class restorePlayer {};
+        //     class collectArsenal {};
+        //     class restoreArsenal {};
+        //     class collectRenegadeBase {};
+        //     class restoreRenegadeBase {};
+        //     class init {};
+        // };
+
         // =============================================================
         // Mission Generator
         // =============================================================
