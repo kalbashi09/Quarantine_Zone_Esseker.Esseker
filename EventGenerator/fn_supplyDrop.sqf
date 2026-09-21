@@ -241,6 +241,52 @@ private _pickedMeds = [_medicalExtras, 2 + floor random 3] call _fnc_pickRandom;
     _cargo addItemCargoGlobal [_x, 2 + floor random 4];  // 2-5 of each
 } forEach _pickedMeds;
 
+// ---- RANDOM: Ravage food (hunger) ----------------------------------
+private _foodPool = [
+    "rvg_beans",
+    "rvg_bacon",
+    "rvg_rice",
+    "rvg_rustyCan",
+    "rvg_Chicken_Meat_Cooked",
+    "rvg_Rabbit_Meat_Cooked",
+    "rvg_Sheep_Meat_Cooked"
+];
+
+private _pickedFood = [_foodPool, 2 + floor random 3] call _fnc_pickRandom;
+{
+    _cargo addItemCargoGlobal [_x, 2 + floor random 4];
+} forEach _pickedFood;
+
+// ---- RANDOM: Ravage drinks (thirst) --------------------------------
+private _drinkPool = [
+    "rvg_canteenPurified",
+    "rvg_plasticBottlePurified",
+    "rvg_milk",
+    "rvg_spirit",
+    "rvg_franta"
+];
+
+private _pickedDrinks = [_drinkPool, 1 + floor random 3] call _fnc_pickRandom;
+{
+    _cargo addItemCargoGlobal [_x, 2 + floor random 3];
+} forEach _pickedDrinks;
+
+// ---- ALWAYS: survival tools (critical, never skip) -----------------
+// Can opener unlocks packaged food. Matches let you cook raw meat.
+_cargo addItemCargoGlobal ["rvg_canOpener", 1];
+_cargo addItemCargoGlobal ["rvg_matches",    1];
+
+// ---- RANDOM: advanced survival tools (50% chance each) -------------
+if (random 1 < 0.5) then {
+    _cargo addItemCargoGlobal ["rvg_purificationTablets", 2 + floor random 4];
+};
+if (random 1 < 0.5) then {
+    _cargo addItemCargoGlobal ["rvg_antiRad", 1 + floor random 3];
+};
+if (random 1 < 0.4) then {
+    _cargo addItemCargoGlobal ["rvg_guttingKnife", 1];
+};
+
 // ---- RANDOM: weapons (2-4 of 5) ------------------------------------
 private _pickedWeapons = [RVG_SupplyWeapons, 2 + floor random 3] call _fnc_pickRandom;
 {

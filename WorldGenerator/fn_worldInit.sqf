@@ -22,7 +22,7 @@ RVG_renegadeLocationName = "";
 RVG_renegadeLastCleared  = -99999;
 RVG_renegadeCrate        = objNull;
 
-sleep 20;
+sleep 600;   // 10 min after server start
 
 [] spawn {
 

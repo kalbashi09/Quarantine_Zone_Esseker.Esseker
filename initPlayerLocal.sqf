@@ -19,3 +19,5 @@ _myGrp setVariable ["RVG_ownerUID", getPlayerUID player, true];
 [_myGrp] spawn RVG_fnc_teammateLeash;
 [_myGrp] spawn RVG_fnc_teammateWatchdog;
 
+// Survival HUD — hunger, thirst, radiation bars
+[] spawn RVG_fnc_survivalHUD;

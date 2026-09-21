@@ -56,7 +56,30 @@ RVG_SupplyItems = [
     "ACE_personalAidKit",
 
     // ACE Misc
-    "ACE_bodyBag"
+    "ACE_bodyBag",
+
+    // Ravage consumables — Hunger
+    "rvg_beans",
+    "rvg_bacon",
+    "rvg_rice",
+    "rvg_rustyCan",
+    "rvg_Chicken_Meat_Cooked",
+    "rvg_Rabbit_Meat_Cooked",
+    "rvg_Sheep_Meat_Cooked",
+    
+    // Ravage consumables — Thirst
+    "rvg_canteenPurified",
+    "rvg_plasticBottlePurified",
+    "rvg_milk",
+    "rvg_spirit",
+    "rvg_franta",
+    
+    // Survival tools
+    "rvg_canOpener",
+    "rvg_guttingKnife",
+    "rvg_matches",
+    "rvg_purificationTablets",
+    "rvg_antiRad"
 ];
 
 RVG_SupplyAttachments = [

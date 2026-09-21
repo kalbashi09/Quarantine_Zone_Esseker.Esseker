@@ -1,3 +1,10 @@
+// =========================================================================
+// Forward declarations — REQUIRED for the survival HUD base classes.
+// These MUST be the first lines in the file.
+// =========================================================================
+class RscText;
+class RscProgress;
+
 class Header {
     gameType = "Coop";
     minPlayers = 1;
@@ -22,8 +29,9 @@ class CfgFunctions {
             class spawnPlayerTeammates {};
             class teammateLeash {};
             class teammateWatchdog {};
-            class validateClasses {}; 
-            class baseIntel {}; 
+            class validateClasses {};
+            class baseIntel {};
+            class survivalHUD {};   // ← HUD driver script
         };
 
         // =============================================================
@@ -73,6 +81,67 @@ class CfgFunctions {
             class spawnGarrison {};
             class spawnRoamer {};
             class spawnReinforcements {};
+        };
+    };
+};
+
+// =========================================================================
+// Survival HUD — hunger / thirst / radiation bars
+// =========================================================================
+// Read values set by Ravage on the player unit. Drawn via cutRsc from
+// scripts\fn_survivalHUD.sqf. Three thin bars, top-left of screen.
+// =========================================================================
+class RscTitles {
+    class RVG_SurvivalHUD {
+        idd = 8001;
+        duration = 1e10;         // ← ADD: required for cutRsc to persist
+        fadein = 0;              // ← ADD: no fade-in
+        fadeout = 0;             // ← ADD: no fade-out
+        movingEnable = 0;
+        enableSimulation = 1;
+        onLoad   = "uiNamespace setVariable ['RVG_SurvivalHUD', _this select 0];";
+        onUnload = "uiNamespace setVariable ['RVG_SurvivalHUD', nil];";
+
+        class controls {
+
+            class HungerBar : RscProgress {
+                type = 8;
+                style = 0;                                          // ← ADD
+                texture = "#(argb,8,8,3)color(1,1,1,1)";            // ← ADD (procedural white texture)
+                idc = 8002;
+                colorFrame[] = {0, 0, 0, 0.6};
+                colorBar[]   = {1, 0.6, 0.2, 0.9};
+                x = 0.01 * safezoneW + safezoneX;   // tighter to edge
+                y = 0.01 * safezoneH + safezoneY;
+                w = 0.06 * safezoneW;               // 6% width (was 15%)
+                h = 0.012 * safezoneH;              // 1.2% height (was 2%)
+            };
+
+            class ThirstBar : RscProgress {
+                type = 8;
+                style = 0;                                          // ← ADD
+                texture = "#(argb,8,8,3)color(1,1,1,1)";            // ← ADD
+                idc = 8004;
+                colorFrame[] = {0, 0, 0, 0.6};
+                colorBar[]   = {0.3, 0.6, 1, 0.9};
+                x = 0.01 * safezoneW + safezoneX;   // tighter to edge
+                y = 0.028 * safezoneH + safezoneY;
+                w = 0.06 * safezoneW;               // 6% width (was 15%)
+                h = 0.012 * safezoneH; 
+            };
+
+            class RadBar : RscProgress {
+                type = 8;
+                style = 0;                                          // ← ADD
+                texture = "#(argb,8,8,3)color(1,1,1,1)";            // ← ADD
+                idc = 8006;
+                colorFrame[] = {0, 0, 0, 0.6};
+                colorBar[]   = {0.7, 1, 0.3, 0.9};
+                x = 0.01 * safezoneW + safezoneX;   // tighter to edge
+                y = 0.046 * safezoneH + safezoneY;
+                w = 0.06 * safezoneW;               // 6% width (was 15%)
+                h = 0.012 * safezoneH; 
+            };
         };
     };
 };
