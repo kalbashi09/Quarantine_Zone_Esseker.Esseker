@@ -38,8 +38,8 @@ _saveData params [
     "_savedUID",
     "_playerData",
     "_teamData",
-    "_arsenalData",
-    "_renegadeBaseData"
+    "_arsenalData"
+    // "_renegadeBaseData"
 ];
 
 // -------------------------------------------------------------------------
@@ -61,7 +61,7 @@ _saveData params [
 // Restore renegade base
 // -------------------------------------------------------------------------
 
-[_renegadeBaseData] call RVG_fnc_restoreRenegadeBase;
+// [_renegadeBaseData] call RVG_fnc_restoreRenegadeBase;
 
 // -------------------------------------------------------------------------
 // Restore teammates

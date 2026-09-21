@@ -60,14 +60,27 @@ diag_log "=== RVG EVENTS: Generator started ===";
 [] spawn RVG_fnc_worldInit;
 
 // =========================================================================
-// Mission Generator TEST
+// Mission Generator
 // =========================================================================
 
-diag_log "RVG TEST: initServer reached Mission Generator section.";
+diag_log "RVG: Starting Mission Generator...";
 
-if (isNil "RVG_fnc_init") then {
-    diag_log "RVG TEST ERROR: RVG_fnc_init DOES NOT EXIST!";
+if (isNil "RVG_fnc_missionInit") then {
+    diag_log "RVG ERROR: RVG_fnc_missionInit DOES NOT EXIST!";
 } else {
-    diag_log "RVG TEST: RVG_fnc_init exists. Starting generator.";
-    [] spawn RVG_fnc_init;
+    diag_log "RVG: RVG_fnc_missionInit exists. Starting generator.";
+    [] spawn RVG_fnc_missionInit;
+};
+
+// =========================================================================
+// Save State
+// =========================================================================
+
+diag_log "RVG: Starting SaveState...";
+
+if (isNil "RVG_fnc_saveInit") then {
+    diag_log "RVG ERROR: RVG_fnc_saveInit DOES NOT EXIST!";
+} else {
+    diag_log "RVG: RVG_fnc_saveInit exists. Starting SaveState.";
+    [] spawn RVG_fnc_saveInit;
 };

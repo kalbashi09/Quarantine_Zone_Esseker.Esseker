@@ -32,7 +32,7 @@ private _arsenalData = call RVG_fnc_collectArsenal;
 // RENEGADE BASE
 // -------------------------------------------------------------------------
 
-private _renegadeBaseData = call RVG_fnc_collectRenegadeBase;
+// private _renegadeBaseData = call RVG_fnc_collectRenegadeBase;
 
 // -------------------------------------------------------------------------
 // TEAMMATES
@@ -68,8 +68,8 @@ private _saveData = [
     _uid,
     _playerData,
     _teamData,
-    _arsenalData,
-    _renegadeBaseData
+    _arsenalData
+    // _renegadeBaseData
 ];
 
 // -------------------------------------------------------------------------
