@@ -94,14 +94,114 @@ if (!_active) exitWith {
 
 // -------------------------------------------------------------------------
 // Rebuild the saved base
+//
+// Try up to 3 times. The base is considered successfully restored only
+// when buildRenegadeBase returns a valid object array and a valid crate.
 // -------------------------------------------------------------------------
 
-private _buildResult = [
-    _basePos
-] call RVG_fnc_buildRenegadeBase;
+private _buildSuccess = false;
+private _objects = [];
+private _crate = objNull;
 
-private _objects = _buildResult select 0;
-private _crate = _buildResult select 1;
+for "_attempt" from 1 to 3 do {
+
+    diag_log format [
+        "=== RVG SAVE: Building Renegade Base — attempt %1/3 ===",
+        _attempt
+    ];
+
+    // Clean up anything left by a previous failed attempt.
+    {
+        if (!isNull _x) then {
+            deleteVehicle _x;
+        };
+    } forEach _objects;
+
+    if (!isNull _crate) then {
+        deleteVehicle _crate;
+    };
+
+    _objects = [];
+    _crate = objNull;
+
+    // Build base.
+    private _buildResult = [
+        _basePos
+    ] call RVG_fnc_buildRenegadeBase;
+
+    // Validate returned data.
+    if (
+        _buildResult isEqualType [] &&
+        {count _buildResult >= 2}
+    ) then {
+
+        private _candidateObjects = _buildResult select 0;
+        private _candidateCrate   = _buildResult select 1;
+
+        if (
+            _candidateObjects isEqualType [] &&
+            {_candidateCrate isEqualType objNull} &&
+            {!isNull _candidateCrate}
+        ) then {
+
+            _objects = _candidateObjects;
+            _crate   = _candidateCrate;
+
+            _buildSuccess = true;
+
+            diag_log format [
+                "=== RVG SAVE: Renegade Base build verified on attempt %1 — %2 objects + crate ===",
+                _attempt,
+                count _objects
+            ];
+
+            break;
+        };
+    };
+
+    diag_log format [
+        "=== RVG SAVE WARNING: Renegade Base build failed verification on attempt %1/3 ===",
+        _attempt
+    ];
+
+    // Give Arma one frame/second before retrying.
+    sleep 1;
+};
+
+// -------------------------------------------------------------------------
+// Base restoration failed completely
+// -------------------------------------------------------------------------
+
+if (!_buildSuccess) exitWith {
+
+    missionNamespace setVariable [
+        "RVG_renegadeBaseActive",
+        false
+    ];
+
+    missionNamespace setVariable [
+        "RVG_renegadeBaseObjects",
+        []
+    ];
+
+    missionNamespace setVariable [
+        "RVG_renegadeGarrison",
+        []
+    ];
+
+    missionNamespace setVariable [
+        "RVG_renegadeCrate",
+        objNull
+    ];
+
+    diag_log [
+        "=== RVG SAVE ERROR: Renegade Base could not be restored after 3 attempts ==="
+    ];
+};
+
+// -------------------------------------------------------------------------
+// Store verified base references
+// -------------------------------------------------------------------------
 
 missionNamespace setVariable [
     "RVG_renegadeBaseObjects",
@@ -121,9 +221,40 @@ private _garrison = [
     _basePos
 ] call RVG_fnc_spawnGarrison;
 
-missionNamespace setVariable [
-    "RVG_renegadeGarrison",
-    _garrison
+if (
+    !(_garrison isEqualType []) ||
+    {count _garrison == 0}
+) then {
+
+    diag_log [
+        "=== RVG SAVE WARNING: Renegade Base restored but garrison returned empty ==="
+    ];
+
+} else {
+
+    missionNamespace setVariable [
+        "RVG_renegadeGarrison",
+        _garrison
+    ];
+
+    diag_log format [
+        "=== RVG SAVE: Renegade garrison restored — %1 groups ===",
+        count _garrison
+    ];
+};
+
+// -------------------------------------------------------------------------
+// Restore Field Intel diary
+// -------------------------------------------------------------------------
+
+[
+    "SPAWN",
+    _locationName,
+    _basePos
+] remoteExec [
+    "RVG_fnc_baseIntel",
+    0,
+    true
 ];
 
 // -------------------------------------------------------------------------
@@ -152,50 +283,76 @@ if (
     _crate setPosATL _cratePos;
     _crate setDir _crateDir;
 
+    // ---------------------------------------------------------------------
     // Weapons
+    // ---------------------------------------------------------------------
+
     private _weaponClasses = _weaponCargo select 0;
     private _weaponCounts  = _weaponCargo select 1;
 
     for "_i" from 0 to ((count _weaponClasses) - 1) do {
+
         _crate addWeaponCargoGlobal [
             _weaponClasses select _i,
             _weaponCounts select _i
         ];
     };
 
+    // ---------------------------------------------------------------------
     // Items
+    // ---------------------------------------------------------------------
+
     private _itemClasses = _itemCargo select 0;
     private _itemCounts  = _itemCargo select 1;
 
     for "_i" from 0 to ((count _itemClasses) - 1) do {
+
         _crate addItemCargoGlobal [
             _itemClasses select _i,
             _itemCounts select _i
         ];
     };
 
+    // ---------------------------------------------------------------------
     // Magazines
+    // ---------------------------------------------------------------------
+
     private _magClasses = _magazineCargo select 0;
     private _magCounts  = _magazineCargo select 1;
 
     for "_i" from 0 to ((count _magClasses) - 1) do {
+
         _crate addMagazineCargoGlobal [
             _magClasses select _i,
             _magCounts select _i
         ];
     };
 
+    // ---------------------------------------------------------------------
     // Backpacks
+    // ---------------------------------------------------------------------
+
     private _backpackClasses = _backpackCargo select 0;
     private _backpackCounts  = _backpackCargo select 1;
 
     for "_i" from 0 to ((count _backpackClasses) - 1) do {
+
         _crate addBackpackCargoGlobal [
             _backpackClasses select _i,
             _backpackCounts select _i
         ];
     };
+
+    diag_log "=== RVG SAVE: Renegade crate inventory restored ===";
+
+} else {
+
+    diag_log "=== RVG SAVE: No saved crate inventory to restore ===";
 };
+
+// -------------------------------------------------------------------------
+// Final confirmation
+// -------------------------------------------------------------------------
 
 diag_log format [
     "=== RVG SAVE: Renegade Base restored at %1 (%2) ===",
