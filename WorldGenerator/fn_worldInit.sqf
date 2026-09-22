@@ -22,7 +22,7 @@ RVG_renegadeLocationName = "";
 RVG_renegadeLastCleared  = -99999;
 RVG_renegadeCrate        = objNull;
 
-sleep 600;   // 10 min after server start
+sleep 15;   // 10 min after server start
 
 [] spawn {
 
@@ -116,7 +116,15 @@ sleep 600;   // 10 min after server start
     while { true } do {
 
         // ---- Spawn a base if none is active ----------------------------
-        if (!RVG_renegadeBaseActive) then {
+        if (
+            !RVG_renegadeBaseActive &&
+            {
+                !(missionNamespace getVariable [
+                    "RVG_renegadeBaseRestoreInProgress",
+                    false
+                ])
+            }
+        ) then {
             private _cooledDown = (diag_tickTime - RVG_renegadeLastCleared) > 1500;
 
             if (RVG_renegadeLastCleared < 0 || _cooledDown) then {
@@ -164,7 +172,15 @@ sleep 600;   // 10 min after server start
         };
 
         // ---- Check if garrison is wiped --------------------------------
-        if (RVG_renegadeBaseActive) then {
+        if (
+            RVG_renegadeBaseActive &&
+            {
+                !(missionNamespace getVariable [
+                    "RVG_renegadeBaseRestoreInProgress",
+                    false
+                ])
+            }
+        ) then {
             private _alive = 0;
             {
                 _alive = _alive + ({ alive _x } count (units _x));

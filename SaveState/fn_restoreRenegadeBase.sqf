@@ -4,6 +4,12 @@
 
 params ["_data"];
 
+missionNamespace setVariable [
+    "RVG_renegadeBaseRestoreInProgress",
+    true,
+    true
+];
+
 _data params [
     "_active",
     "_basePos",
@@ -89,6 +95,22 @@ missionNamespace setVariable [
 // -------------------------------------------------------------------------
 
 if (!_active) exitWith {
+
+    [
+        "RESET",
+        "",
+        [0, 0, 0]
+    ] remoteExec [
+        "RVG_fnc_baseIntel",
+        0
+    ];
+
+    missionNamespace setVariable [
+        "RVG_renegadeBaseRestoreInProgress",
+        false,
+        true
+    ];
+
     diag_log "=== RVG SAVE: No active Renegade Base to restore ===";
 };
 
@@ -194,6 +216,12 @@ if (!_buildSuccess) exitWith {
         objNull
     ];
 
+    missionNamespace setVariable [
+        "RVG_renegadeBaseRestoreInProgress",
+        false,
+        true
+    ];
+
     diag_log [
         "=== RVG SAVE ERROR: Renegade Base could not be restored after 3 attempts ==="
     ];
@@ -248,13 +276,12 @@ if (
 // -------------------------------------------------------------------------
 
 [
-    "SPAWN",
+    "LOAD",
     _locationName,
     _basePos
 ] remoteExec [
     "RVG_fnc_baseIntel",
-    0,
-    true
+    0
 ];
 
 // -------------------------------------------------------------------------
@@ -358,4 +385,10 @@ diag_log format [
     "=== RVG SAVE: Renegade Base restored at %1 (%2) ===",
     _locationName,
     _basePos
+];
+
+missionNamespace setVariable [
+    "RVG_renegadeBaseRestoreInProgress",
+    false,
+    true
 ];
