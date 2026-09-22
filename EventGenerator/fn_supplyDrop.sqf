@@ -233,7 +233,8 @@ private _medicalExtras = [
     "ACE_splint",
     "ACE_salineIV_500",
     "ACE_salineIV",
-    "ACE_bloodIV_500"
+    "ACE_bloodIV_500",
+    "ACE_painkillers"
 ];
 
 private _pickedMeds = [_medicalExtras, 2 + floor random 3] call _fnc_pickRandom;  // 2-4 items
@@ -487,8 +488,6 @@ _marker setMarkerText format [
         };
     } forEach units _group;
 
-    deleteMarker _markerName;
-
     diag_log "=== RVG EVENT: Supply helicopter expired ===";
 };
 
@@ -497,11 +496,13 @@ _marker setMarkerText format [
 // =====================================================
 
 [
-    _cargo
+    _cargo,
+    _markerName
 ] spawn {
 
     params [
-        "_cargo"
+        "_cargo",
+        "_markerName"
     ];
 
     sleep 1800;
@@ -510,7 +511,9 @@ _marker setMarkerText format [
         deleteVehicle _cargo;
     };
 
-    diag_log "=== RVG EVENT: Supply cargo expired ===";
+    deleteMarker _markerName;
+
+    diag_log "=== RVG EVENT: Supply cargo and marker expired ===";
 };
 
 // =====================================================

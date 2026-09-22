@@ -7,14 +7,15 @@ waitUntil {
     !isNull BaseArsenalWeapons &&
     !isNull BaseArsenalEquipments &&
     !isNull BaseArsenalEssentials &&
-    !isNull BaseArsenalAttachments
+    !isNull BaseArsenalAttachments &&
+    !isNull BaseArsenalStorage
 };
 
 diag_log "=== RVG SUPPLY: Arsenal containers found ===";
 
 
 // =====================================================
-// CLEAR ALL CONTAINERS
+// CLEAR STANDARD ARSENAL CONTAINERS
 // =====================================================
 
 {
@@ -28,6 +29,24 @@ diag_log "=== RVG SUPPLY: Arsenal containers found ===";
     BaseArsenalEssentials,
     BaseArsenalAttachments
 ];
+
+
+// =====================================================
+// CLEAR PERSISTENT STORAGE
+//
+// BaseArsenalStorage is intentionally NOT populated
+// with default supplies.
+//
+// Anything placed here during gameplay is player storage
+// and is handled exclusively by SaveState.
+// =====================================================
+
+clearWeaponCargoGlobal BaseArsenalStorage;
+clearMagazineCargoGlobal BaseArsenalStorage;
+clearItemCargoGlobal BaseArsenalStorage;
+clearBackpackCargoGlobal BaseArsenalStorage;
+
+diag_log "=== RVG SUPPLY: BaseArsenalStorage cleared ===";
 
 
 // =====================================================
@@ -129,9 +148,6 @@ diag_log "=== RVG SUPPLY: Arsenal containers found ===";
 } forEach RVG_SupplyAttachments;
 
 
-diag_log "=== RVG SUPPLY: Arsenal storage populated ===";
-
-
 // =====================================================
 // ENABLE NORMAL CARGO INTERACTION
 // =====================================================
@@ -147,7 +163,11 @@ diag_log "=== RVG SUPPLY: Arsenal storage populated ===";
     BaseArsenalWeapons,
     BaseArsenalEquipments,
     BaseArsenalEssentials,
-    BaseArsenalAttachments
+    BaseArsenalAttachments,
+    BaseArsenalStorage
 ];
 
+
+diag_log "=== RVG SUPPLY: Arsenal storage populated ===";
+diag_log "=== RVG SUPPLY: BaseArsenalStorage ready for persistent player storage ===";
 diag_log "=== RVG SUPPLY: Cargo interaction enabled ===";

@@ -8,7 +8,8 @@ private _containers = [
     BaseArsenalWeapons,
     BaseArsenalEquipments,
     BaseArsenalEssentials,
-    BaseArsenalAttachments
+    BaseArsenalAttachments,
+    BaseArsenalStorage
 ];
 
 {
