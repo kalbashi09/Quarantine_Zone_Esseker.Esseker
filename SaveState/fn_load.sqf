@@ -39,7 +39,8 @@ _saveData params [
     "_playerData",
     "_teamData",
     "_arsenalData",
-    "_renegadeBaseData"
+    "_renegadeBaseData",
+    "_missionData"
 ];
 
 // -------------------------------------------------------------------------
@@ -106,6 +107,12 @@ sleep 1;
 } forEach _teamData;
 
 // -------------------------------------------------------------------------
+// Restore missions
+// -------------------------------------------------------------------------
+
+[_missionData] call RVG_fnc_restoreMissions;
+
+// -------------------------------------------------------------------------
 // Done
 // -------------------------------------------------------------------------
 
@@ -117,7 +124,9 @@ diag_log format [
 
 [
     format [
-        "PERSISTENT LOAD COMPLETE — %1 teammates restored.",
-        count _teamData
+        "PERSISTENT LOAD COMPLETE — %1 teammates, %2 missions restored.",
+        count _teamData,
+        count _missionData
     ]
 ] remoteExec ["systemChat", owner _player];
+

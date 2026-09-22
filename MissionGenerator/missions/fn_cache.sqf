@@ -12,8 +12,38 @@
 params [
     "_slot",
     "_locationName",
-    "_locationPos"
+    "_locationPos",
+    ["_missionInstance", ""]
 ];
+
+// =========================================================================
+// Mission ownership check
+// =========================================================================
+//
+// Prevents an old mission coroutine from touching a newer mission that
+// reused the same slot after a save/load cycle.
+//
+
+private _fnc_isCurrentMission = {
+
+    private _active = missionNamespace getVariable [
+        "RVG_activeMissions",
+        []
+    ];
+
+    private _index = _active findIf {
+        (_x select 0) == _slot
+    };
+
+    if (_index < 0) exitWith {
+        false
+    };
+
+    private _current = _active select _index;
+
+    (count _current >= 5) &&
+    { (_current select 4) == _missionInstance }
+};
 
 
 // =========================================================================
@@ -50,27 +80,45 @@ _marker setMarkerColor "ColorOrange";
 private _cachePos = [];
 
 for "_attempt" from 1 to 20 do {
+
     if (!(_cachePos isEqualTo [])) exitWith {};
 
     private _bearing  = random 360;
     private _distance = 75 + random 125;
 
     private _testPos = [
-        (_locationPos select 0) + (sin _bearing * _distance),
-        (_locationPos select 1) + (cos _bearing * _distance),
+        (_locationPos select 0) +
+            (sin _bearing * _distance),
+
+        (_locationPos select 1) +
+            (cos _bearing * _distance),
+
         0
     ];
 
-    private _nearBuildings = nearestTerrainObjects [_testPos, ["BUILDING"], 5];
+    private _nearBuildings =
+        nearestTerrainObjects [
+            _testPos,
+            ["BUILDING"],
+            5
+        ];
 
-    if (!(surfaceIsWater _testPos) && { _nearBuildings isEqualTo [] }) then {
+    if (
+        !(surfaceIsWater _testPos) &&
+        { _nearBuildings isEqualTo [] }
+    ) then {
         _cachePos = _testPos;
     };
 };
 
 if (_cachePos isEqualTo []) then {
+
     _cachePos = _locationPos;
-    diag_log "RVG Cache: Using fallback position (no clear spot in 20 attempts).";
+
+    diag_log [
+        "RVG Cache: Using fallback position",
+        "(no clear spot in 20 attempts)."
+    ];
 };
 
 
@@ -185,6 +233,8 @@ _tent setDir (random 360);
 
 _campObjects pushBack _tent;
 
+[_slot, _tent] call RVG_fnc_registerMissionEntity;
+
 
 // -------------------------------------------------------------------------
 // Camping chairs
@@ -208,6 +258,7 @@ _campObjects pushBack _chair1;
 
 [_slot, _chair1] call RVG_fnc_registerMissionEntity;
 
+
 private _chair2 = createVehicle [
     "Land_CampingChair_V1_F",
     [
@@ -226,6 +277,7 @@ _campObjects pushBack _chair2;
 
 [_slot, _chair2] call RVG_fnc_registerMissionEntity;
 
+
 private _chair3 = createVehicle [
     "Land_CampingChair_V1_F",
     [
@@ -243,6 +295,7 @@ _chair3 setDir (random 360);
 _campObjects pushBack _chair3;
 
 [_slot, _chair3] call RVG_fnc_registerMissionEntity;
+
 
 // -------------------------------------------------------------------------
 // Small equipment crate
@@ -274,6 +327,7 @@ _campObjects pushBack _campCrate;
 
 [_slot, _campCrate] call RVG_fnc_registerMissionEntity;
 
+
 // -------------------------------------------------------------------------
 // Water container
 // -------------------------------------------------------------------------
@@ -294,6 +348,7 @@ _campObjects pushBack _water;
 
 [_slot, _water] call RVG_fnc_registerMissionEntity;
 
+
 // =========================================================================
 // Search action
 // =========================================================================
@@ -307,7 +362,7 @@ _cache addAction [
             "_actionId"
         ];
 
-        // Prevent multiple people from searching it
+        // Prevent multiple people from searching it.
         if (
             _target getVariable [
                 "RVG_cacheSearched",
@@ -330,7 +385,6 @@ _cache addAction [
             0
         ];
 
-        // Tell mission script that cache was found
         _target setVariable [
             "RVG_cacheFound",
             true,
@@ -370,6 +424,11 @@ waitUntil {
 
     sleep 1;
 
+    // Old mission instance was replaced.
+    if !([] call _fnc_isCurrentMission) exitWith {
+        true
+    };
+
     if (isNull _cache) exitWith {
         true
     };
@@ -381,7 +440,31 @@ waitUntil {
 };
 
 
+// =========================================================================
+// Stop if this coroutine became stale
+// =========================================================================
+
+if !([] call _fnc_isCurrentMission) exitWith {
+
+    diag_log format [
+        "RVG Cache: Old instance %1 detected for slot %2. Exiting.",
+        _missionInstance,
+        _slot + 1
+    ];
+};
+
+
+// =========================================================================
+// Cache disappeared before search
+// =========================================================================
+
 if (isNull _cache) exitWith {
+
+    diag_log format [
+        "RVG Cache: Cache lost for slot %1.",
+        _slot + 1
+    ];
+
     deleteMarker _marker;
 };
 
@@ -395,8 +478,24 @@ _marker setMarkerText "CACHE FOUND";
 _marker setMarkerColor "ColorYellow";
 
 
+// =========================================================================
 // Small delay
+// =========================================================================
+
 sleep 2;
+
+
+// =========================================================================
+// Check ownership again before creating reward
+// =========================================================================
+
+if !([] call _fnc_isCurrentMission) exitWith {
+
+    diag_log format [
+        "RVG Cache: Old instance %1 detected before loot creation.",
+        _missionInstance
+    ];
+};
 
 
 // =========================================================================
@@ -430,50 +529,31 @@ clearBackpackCargoGlobal _lootBag;
 // Randomized loot
 // =========================================================================
 
-// -------------------------------------------------------------------------
 // Medical supplies
-// -------------------------------------------------------------------------
-
 _lootBag addItemCargoGlobal [
     "FirstAidKit",
     3 + floor random 5
 ];
 
-
-// -------------------------------------------------------------------------
 // Rifle ammunition
-// -------------------------------------------------------------------------
-
 _lootBag addMagazineCargoGlobal [
     "30Rnd_65x39_caseless_mag",
     4 + floor random 7
 ];
 
-
-// -------------------------------------------------------------------------
 // Pistol ammunition
-// -------------------------------------------------------------------------
-
 _lootBag addMagazineCargoGlobal [
     "16Rnd_9x21_Mag",
     2 + floor random 5
 ];
 
-
-// -------------------------------------------------------------------------
 // Grenades
-// -------------------------------------------------------------------------
-
 _lootBag addMagazineCargoGlobal [
     "HandGrenade",
     1 + floor random 3
 ];
 
-
-// -------------------------------------------------------------------------
 // Smoke
-// -------------------------------------------------------------------------
-
 _lootBag addMagazineCargoGlobal [
     "SmokeShell",
     1 + floor random 4
@@ -554,6 +634,19 @@ deleteVehicle _cache;
         deleteVehicle _x;
     };
 } forEach _campObjects;
+
+
+// =========================================================================
+// Final ownership check before completing mission
+// =========================================================================
+
+if !([] call _fnc_isCurrentMission) exitWith {
+
+    diag_log format [
+        "RVG Cache: Instance %1 became stale during completion.",
+        _missionInstance
+    ];
+};
 
 
 // =========================================================================

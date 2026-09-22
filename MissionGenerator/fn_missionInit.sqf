@@ -19,6 +19,8 @@ sleep 2;
 missionNamespace setVariable ["RVG_activeMissions", [], true];
 missionNamespace setVariable ["RVG_usedMissionLocations", []];
 
+missionNamespace setVariable ["RVG_missionRestoreInProgress", false, true];
+
 private _locations = [1000] call RVG_fnc_scanLocations;
 
 diag_log format [
@@ -44,6 +46,14 @@ private _batchNumber = 0;
 // =========================================================================
 
 while {true} do {
+
+    waitUntil {
+        sleep 1;
+        !(missionNamespace getVariable [
+            "RVG_missionRestoreInProgress",
+            false
+        ])
+    };
 
     _batchNumber = _batchNumber + 1;
 
@@ -89,13 +99,19 @@ while {true} do {
 
         sleep 2;
 
+        private _restoring =
+            missionNamespace getVariable [
+                "RVG_missionRestoreInProgress",
+                false
+            ];
+
         private _active =
             missionNamespace getVariable [
                 "RVG_activeMissions",
                 []
             ];
 
-        count _active == 0
+        !_restoring && { count _active == 0 }
     };
 
     diag_log format [

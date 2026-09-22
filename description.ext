@@ -45,6 +45,8 @@ class CfgFunctions {
             class restoreArsenal {};
             class collectRenegadeBase {};
             class restoreRenegadeBase {};
+            class collectMissions {};
+            class restoreMissions {};
             class saveInit {};
         };
 

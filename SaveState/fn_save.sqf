@@ -35,6 +35,12 @@ private _arsenalData = call RVG_fnc_collectArsenal;
 private _renegadeBaseData = call RVG_fnc_collectRenegadeBase;
 
 // -------------------------------------------------------------------------
+// MISSIONS
+// -------------------------------------------------------------------------
+
+private _missionData = call RVG_fnc_collectMissions;
+
+// -------------------------------------------------------------------------
 // TEAMMATES
 // -------------------------------------------------------------------------
 
@@ -63,13 +69,14 @@ private _teamData = [];
 // -------------------------------------------------------------------------
 
 private _saveData = [
-    2,
+    3, // version
     diag_tickTime,
     _uid,
     _playerData,
     _teamData,
     _arsenalData,
-    _renegadeBaseData
+    _renegadeBaseData,
+    _missionData
 ];
 
 // -------------------------------------------------------------------------
@@ -91,6 +98,7 @@ diag_log format [
 ];
 
 [format [
-    "PERSISTENT SAVE COMPLETE — %1 teammates saved.",
-    count _teamData
+    "PERSISTENT SAVE COMPLETE — %1 teammates, %2 missions saved.",
+    count _teamData,
+    count _missionData
 ]] remoteExec ["systemChat", owner _player];
