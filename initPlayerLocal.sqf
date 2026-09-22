@@ -55,10 +55,10 @@ _myGrp setVariable ["RVG_ownerUID", getPlayerUID player, true];
 };
 
 // =====================================================
-// Persistent Save / Load — 100m MissionHQ Radius
+// Persistent Save / Load — SaveHere Interaction
 // =====================================================
 
-waitUntil { !isNull MissionHQ };
+waitUntil { !isNull SaveHere };
 
 player addAction [
     "<t color='#55FF55'>Save Persistent</t>",
@@ -70,7 +70,7 @@ player addAction [
     true,
     true,
     "",
-    "alive player && player distance MissionHQ <= 100"
+    "alive player && cursorObject isEqualTo SaveHere"
 ];
 
 player addAction [
@@ -83,5 +83,5 @@ player addAction [
     true,
     true,
     "",
-    "alive player && player distance MissionHQ <= 100"
+    "alive player && cursorObject isEqualTo SaveHere"
 ];

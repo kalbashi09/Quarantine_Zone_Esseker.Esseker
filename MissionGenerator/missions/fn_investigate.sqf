@@ -103,12 +103,15 @@ _marker setMarkerText format [
 [_slot, _markerName] call RVG_fnc_registerMissionMarker;
 
 // ---- Camp position ------------------------------------------------------
-// Manual safe-position search (avoids BIS_fnc_findSafePos spiral-out bug).
+// Find a reasonably flat, clear area with enough room for the entire camp.
+// The camp objects are placed up to ~5m from the objective center, so
+// we check a larger area rather than only checking the exact center.
+
 private _objectivePos = [];
 
-for "_attempt" from 1 to 20 do {
+for "_attempt" from 1 to 40 do {
 
-    if (!(_objectivePos isEqualTo [])) exitWith {};
+    if !(_objectivePos isEqualTo []) exitWith {};
 
     private _bearing  = random 360;
     private _distance = 75 + random 125;
@@ -123,29 +126,149 @@ for "_attempt" from 1 to 20 do {
         0
     ];
 
-    private _nearBuildings =
-        nearestTerrainObjects [
-            _testPos,
-            ["BUILDING"],
-            5
+    // Put position on the actual terrain surface
+    _testPos set [
+        2,
+        getTerrainHeightASL _testPos
+    ];
+
+    // -------------------------------------------------------------
+    // Basic terrain checks
+    // -------------------------------------------------------------
+
+    // No water
+    if (surfaceIsWater _testPos) then {
+        continue;
+    };
+
+    // Avoid steep slopes
+    private _normal = surfaceNormal _testPos;
+
+    if ((_normal select 2) < 0.94) then {
+        continue;
+    };
+
+    // -------------------------------------------------------------
+    // Check the entire camp area
+    // -------------------------------------------------------------
+
+    private _blocked = false;
+
+    private _nearbyObjects = nearestTerrainObjects [
+        _testPos,
+        [
+            "TREE",
+            "SMALL TREE",
+            "BUSH",
+            "BUILDING",
+            "ROCK",
+            "ROCKS",
+            "FENCE",
+            "WALL",
+            "HIDE"
+        ],
+        8
+    ];
+
+    if !(_nearbyObjects isEqualTo []) then {
+        _blocked = true;
+    };
+
+    if (_blocked) then {
+        continue;
+    };
+
+    // -------------------------------------------------------------
+    // Make sure there is actual walkable terrain around the camp.
+    // Check several points around the center.
+    // -------------------------------------------------------------
+
+    private _checkDistances = [
+        [4,   0],
+        [4,  90],
+        [4, 180],
+        [4, 270],
+        [7,  45],
+        [7, 135],
+        [7, 225],
+        [7, 315]
+    ];
+
+    private _areaGood = true;
+
+    {
+        _x params [
+            "_checkDistance",
+            "_checkDirection"
         ];
 
-    if (
-        !(surfaceIsWater _testPos) &&
-        { _nearBuildings isEqualTo [] }
-    ) then {
-        _objectivePos = _testPos;
+        private _checkPos = _testPos getPos [
+            _checkDistance,
+            _checkDirection
+        ];
+
+        _checkPos set [
+            2,
+            getTerrainHeightASL _checkPos
+        ];
+
+        if (surfaceIsWater _checkPos) then {
+            _areaGood = false;
+        };
+
+        private _checkNormal =
+            surfaceNormal _checkPos;
+
+        if ((_checkNormal select 2) < 0.94) then {
+            _areaGood = false;
+        };
+
+        private _objects = nearestTerrainObjects [
+            _checkPos,
+            [
+                "TREE",
+                "SMALL TREE",
+                "BUSH",
+                "BUILDING",
+                "ROCK",
+                "ROCKS",
+                "FENCE",
+                "WALL",
+                "HIDE"
+            ],
+            3
+        ];
+
+        if !(_objects isEqualTo []) then {
+            _areaGood = false;
+        };
+
+    } forEach _checkDistances;
+
+    if (!_areaGood) then {
+        continue;
     };
+
+    // -------------------------------------------------------------
+    // Good camp area found
+    // -------------------------------------------------------------
+
+    _objectivePos = _testPos;
+
+    diag_log format [
+        "RVG Investigate: Clear camp area found on attempt %1.",
+        _attempt
+    ];
 };
 
 if (_objectivePos isEqualTo []) then {
 
-    _objectivePos = _locationPos;
-
     diag_log [
-        "RVG Investigate: Using fallback position",
-        "(no clear spot in 20 attempts)."
+        "RVG Investigate: WARNING - No ideal camp area found.",
+        "Using original location as fallback."
     ];
+
+    _objectivePos = _locationPos;
 };
 
 diag_log format [
@@ -177,7 +300,7 @@ private _fnc_place = {
         _p,
         [],
         0,
-        "CAN_COLLIDE"
+        "NONE"
     ];
 
     _o setDir _dirOffset;
@@ -409,7 +532,7 @@ waitUntil {
     (
         allPlayers findIf {
             alive _x &&
-            { (_x distance2D _hq) < 20 }
+            { (_x distance2D _hq) < 80 }
         }
     ) >= 0
 };

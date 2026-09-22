@@ -88,10 +88,11 @@ _marker setMarkerText format [
 [_slot, _markerName] call RVG_fnc_registerMissionMarker;
 
 // ---- Survivor position --------------------------------------------------
-// Manual safe-position search (avoids BIS_fnc_findSafePos spiral-out bug).
+// Find a reasonably clear spawn position for the survivor and guards.
+
 private _spawnPos = [];
 
-for "_attempt" from 1 to 20 do {
+for "_attempt" from 1 to 30 do {
 
     if (!(_spawnPos isEqualTo [])) exitWith {};
 
@@ -108,16 +109,24 @@ for "_attempt" from 1 to 20 do {
         0
     ];
 
-    private _nearBuildings =
+    private _surfaceNormal =
+        surfaceNormal _testPos;
+
+    private _blocked =
         nearestTerrainObjects [
             _testPos,
-            ["BUILDING"],
+            [
+                "ROCK",
+                "ROCKS",
+                "BUILDING"
+            ],
             5
         ];
 
     if (
         !(surfaceIsWater _testPos) &&
-        { _nearBuildings isEqualTo [] }
+        { (_surfaceNormal select 2) >= 0.90 } &&
+        { _blocked isEqualTo [] }
     ) then {
         _spawnPos = _testPos;
     };
@@ -129,9 +138,14 @@ if (_spawnPos isEqualTo []) then {
 
     diag_log [
         "RVG Rescue: Using fallback position",
-        "(no clear spot in 20 attempts)."
+        "(no clear spot found in 30 attempts)."
     ];
 };
+
+diag_log format [
+    "RVG Rescue: Spawn position selected at %1",
+    _spawnPos
+];
 
 // ---- Spawn camp group (survivor + 2 guards) -----------------------------
 // All three in ONE group with a HOLD waypoint.
@@ -476,7 +490,7 @@ waitUntil {
         true
     };
 
-    (_survivor distance2D _hq) < 20
+    (_survivor distance2D _hq) < 80
 };
 
 // ---- Stop if this coroutine became stale -------------------------------

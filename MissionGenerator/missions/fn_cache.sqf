@@ -73,15 +73,16 @@ _marker setMarkerColor "ColorOrange";
 // =========================================================================
 // Find hidden cache position
 // =========================================================================
+//
+// Find a reasonably flat, dry and open area large enough for the cache
+// and the survivor camp surrounding it.
+//
 
-// Manual safe-position search. BIS_fnc_findSafePos can spiral kilometres
-// off-map when it can't find a valid spot within the requested radius.
-// This loop guarantees the position stays within 75-200m of the marker.
 private _cachePos = [];
 
-for "_attempt" from 1 to 20 do {
+for "_attempt" from 1 to 40 do {
 
-    if (!(_cachePos isEqualTo [])) exitWith {};
+    if !(_cachePos isEqualTo []) exitWith {};
 
     private _bearing  = random 360;
     private _distance = 75 + random 125;
@@ -96,31 +97,160 @@ for "_attempt" from 1 to 20 do {
         0
     ];
 
-    private _nearBuildings =
-        nearestTerrainObjects [
-            _testPos,
-            ["BUILDING"],
-            5
+    // Put candidate on actual terrain surface
+    _testPos set [
+        2,
+        getTerrainHeightASL _testPos
+    ];
+
+    // ---------------------------------------------------------------------
+    // Basic terrain checks
+    // ---------------------------------------------------------------------
+
+    // No water
+    if (surfaceIsWater _testPos) then {
+        continue;
+    };
+
+    // Avoid steep terrain
+    private _normal =
+        surfaceNormal _testPos;
+
+    if ((_normal select 2) < 0.94) then {
+        continue;
+    };
+
+    // ---------------------------------------------------------------------
+    // Check the whole camp area
+    // ---------------------------------------------------------------------
+
+    private _blocked = false;
+
+    private _nearbyObjects = nearestTerrainObjects [
+        _testPos,
+        [
+            "TREE",
+            "SMALL TREE",
+            "BUSH",
+            "BUILDING",
+            "ROCK",
+            "ROCKS",
+            "FENCE",
+            "WALL",
+            "HIDE"
+        ],
+        8
+    ];
+
+    if !(_nearbyObjects isEqualTo []) then {
+        _blocked = true;
+    };
+
+    if (_blocked) then {
+        continue;
+    };
+
+    // ---------------------------------------------------------------------
+    // Check the actual positions used by the survivor camp.
+    // ---------------------------------------------------------------------
+
+    private _campPositions = [
+
+        // Cache itself
+        [0, 0],
+
+        // Campfire
+        [4, 2],
+
+        // Tent
+        [-4, 3],
+
+        // Chairs
+        [3, -3],
+        [-2, -4],
+        [5, 1],
+
+        // Camp crate
+        [5, 4],
+
+        // Water container
+        [-3, -2]
+    ];
+
+    private _areaGood = true;
+
+    {
+        _x params [
+            "_offsetX",
+            "_offsetY"
         ];
 
-    if (
-        !(surfaceIsWater _testPos) &&
-        { _nearBuildings isEqualTo [] }
-    ) then {
-        _cachePos = _testPos;
+        private _checkPos = [
+            (_testPos select 0) + _offsetX,
+            (_testPos select 1) + _offsetY,
+            0
+        ];
+
+        _checkPos set [
+            2,
+            getTerrainHeightASL _checkPos
+        ];
+
+        // Water
+        if (surfaceIsWater _checkPos) exitWith {
+            _areaGood = false;
+        };
+
+        // Steep terrain
+        private _checkNormal =
+            surfaceNormal _checkPos;
+
+        if ((_checkNormal select 2) < 0.94) exitWith {
+            _areaGood = false;
+        };
+
+        // Rocks / buildings / large terrain obstacles
+        private _objects = nearestTerrainObjects [
+            _checkPos,
+            [
+                "ROCK",
+                "ROCKS",
+                "BUILDING"
+            ],
+            3
+        ];
+
+        if !(_objects isEqualTo []) exitWith {
+            _areaGood = false;
+        };
+
+    } forEach _campPositions;
+
+    if (!_areaGood) then {
+        continue;
     };
+
+    // ---------------------------------------------------------------------
+    // Valid cache/camp area found
+    // ---------------------------------------------------------------------
+
+    _cachePos = _testPos;
+
+    diag_log format [
+        "RVG Cache: Clear cache area found on attempt %1.",
+        _attempt
+    ];
 };
 
 if (_cachePos isEqualTo []) then {
 
-    _cachePos = _locationPos;
-
     diag_log [
-        "RVG Cache: Using fallback position",
-        "(no clear spot in 20 attempts)."
+        "RVG Cache: WARNING - No ideal cache area found.",
+        "Using location fallback."
     ];
-};
 
+    _cachePos = _locationPos;
+};
 
 // =========================================================================
 // Spawn cache
