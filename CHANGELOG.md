@@ -53,6 +53,11 @@ This release introduces the mission's custom Save State system, allowing players
 - Base generation and mission restoration are prevented from interfering with each other.
 - Renegade Base entities are properly handled during persistence recovery.
 - Base-related systems continue operating normally after Save/Load recovery.
+- Renegade Base restoration now correctly synchronizes with the World Generator.
+- Renegade Base restoration is protected from premature base-clear detection while the base is being rebuilt.
+- Renegade Base Field Intel is refreshed during Save/Load recovery.
+- Loading a saved active base now replaces stale Field Intel with the restored base information.
+- Loading a Save State without an active Renegade Base now clears stale Field Intel entries.
 
 #### Mission Placement
 
@@ -94,6 +99,10 @@ This release introduces the mission's custom Save State system, allowing players
 - Investigate camp objects being created with `CAN_COLLIDE`.
 - Cache camp validation not matching the actual positions of its camp objects.
 - Mission-owned objects, groups, and markers remaining after a mission was cleared.
+- Renegade Base being incorrectly detected as cleared while a saved base was still being restored.
+- Stale Renegade Base Field Intel remaining after loading a Save State.
+- Previous Renegade Base Field Intel entries persisting when the saved state contained no active base.
+- Save State restoration and World Generator base detection racing with each other.
 
 ### Technical
 
@@ -107,6 +116,8 @@ This release introduces the mission's custom Save State system, allowing players
 - `fn_collectMissions.sqf` stores only persistent mission-definition data.
 - Mission restoration creates fresh runtime instances from saved mission definitions.
 - Mission entity cleanup and restoration are performed before the restored mission scripts begin their normal lifecycle.
+- Renegade Base restoration uses a dedicated restore-in-progress state to synchronize with the World Generator.
+- Field Intel is rebuilt from the restored Renegade Base state during Save/Load recovery.
 - Save State operates through mission scripts rather than Arma 3's native save system.
 
 ---

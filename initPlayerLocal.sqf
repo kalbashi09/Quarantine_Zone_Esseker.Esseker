@@ -58,30 +58,71 @@ _myGrp setVariable ["RVG_ownerUID", getPlayerUID player, true];
 // Persistent Save / Load — SaveHere Interaction
 // =====================================================
 
+private _addSaveLoadActions = {
+
+    player addAction [
+        "<t color='#55FF55'>Save Persistent</t>",
+        {
+            [player] remoteExec ["RVG_fnc_save", 2];
+        },
+        nil,
+        1.5,
+        true,
+        true,
+        "",
+        "alive player && cursorObject isEqualTo SaveHere"
+    ];
+
+    player addAction [
+        "<t color='#55AAFF'>Load Persistent</t>",
+        {
+            [player] remoteExec ["RVG_fnc_load", 2];
+        },
+        nil,
+        1.4,
+        true,
+        true,
+        "",
+        "alive player && cursorObject isEqualTo SaveHere"
+    ];
+};
+
 waitUntil { !isNull SaveHere };
 
-player addAction [
-    "<t color='#55FF55'>Save Persistent</t>",
-    {
-        [player] remoteExec ["RVG_fnc_save", 2];
-    },
-    nil,
-    1.5,
-    true,
-    true,
-    "",
-    "alive player && cursorObject isEqualTo SaveHere"
-];
+call _addSaveLoadActions;
 
-player addAction [
-    "<t color='#55AAFF'>Load Persistent</t>",
+player addEventHandler [
+    "Respawn",
     {
-        [player] remoteExec ["RVG_fnc_load", 2];
-    },
-    nil,
-    1.4,
-    true,
-    true,
-    "",
-    "alive player && cursorObject isEqualTo SaveHere"
+        [] spawn {
+            waitUntil { !isNull player && alive player };
+            
+            // Re-add Save/Load actions to the new player
+            player addAction [
+                "<t color='#55FF55'>Save Persistent</t>",
+                {
+                    [player] remoteExec ["RVG_fnc_save", 2];
+                },
+                nil,
+                1.5,
+                true,
+                true,
+                "",
+                "alive player && cursorObject isEqualTo SaveHere"
+            ];
+
+            player addAction [
+                "<t color='#55AAFF'>Load Persistent</t>",
+                {
+                    [player] remoteExec ["RVG_fnc_load", 2];
+                },
+                nil,
+                1.4,
+                true,
+                true,
+                "",
+                "alive player && cursorObject isEqualTo SaveHere"
+            ];
+        };
+    }
 ];
