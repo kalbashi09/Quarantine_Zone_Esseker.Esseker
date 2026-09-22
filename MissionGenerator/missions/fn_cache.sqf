@@ -37,6 +37,8 @@ _marker setMarkerText format [
 
 _marker setMarkerColor "ColorOrange";
 
+[_slot, _markerName] call RVG_fnc_registerMissionMarker;
+
 
 // =========================================================================
 // Find hidden cache position
@@ -95,6 +97,8 @@ _cache setVariable [
     false,
     true
 ];
+
+[_slot, _cache] call RVG_fnc_registerMissionEntity;
 
 
 // =========================================================================
@@ -156,6 +160,8 @@ _campfire inflame true;
 
 _campObjects pushBack _campfire;
 
+[_slot, _campfire] call RVG_fnc_registerMissionEntity;
+
 
 // -------------------------------------------------------------------------
 // Tent
@@ -200,6 +206,7 @@ _chair1 setDir (random 360);
 
 _campObjects pushBack _chair1;
 
+[_slot, _chair1] call RVG_fnc_registerMissionEntity;
 
 private _chair2 = createVehicle [
     "Land_CampingChair_V1_F",
@@ -217,6 +224,7 @@ _chair2 setDir (random 360);
 
 _campObjects pushBack _chair2;
 
+[_slot, _chair2] call RVG_fnc_registerMissionEntity;
 
 private _chair3 = createVehicle [
     "Land_CampingChair_V1_F",
@@ -234,6 +242,7 @@ _chair3 setDir (random 360);
 
 _campObjects pushBack _chair3;
 
+[_slot, _chair3] call RVG_fnc_registerMissionEntity;
 
 // -------------------------------------------------------------------------
 // Small equipment crate
@@ -263,6 +272,7 @@ _campCrate addItemCargoGlobal [
 
 _campObjects pushBack _campCrate;
 
+[_slot, _campCrate] call RVG_fnc_registerMissionEntity;
 
 // -------------------------------------------------------------------------
 // Water container
@@ -282,6 +292,7 @@ private _water = createVehicle [
 
 _campObjects pushBack _water;
 
+[_slot, _water] call RVG_fnc_registerMissionEntity;
 
 // =========================================================================
 // Search action

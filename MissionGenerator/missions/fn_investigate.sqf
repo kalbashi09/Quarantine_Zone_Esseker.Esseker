@@ -36,6 +36,8 @@ _marker setMarkerType  "mil_dot";
 _marker setMarkerColor "ColorBlue";
 _marker setMarkerText  format ["INVESTIGATE: %1", _locationName];
 
+[_slot, _markerName] call RVG_fnc_registerMissionMarker;
+
 // ---- Camp position ------------------------------------------------------
 // Manual safe-position search (avoids BIS_fnc_findSafePos spiral-out bug).
 private _objectivePos = [];
@@ -76,10 +78,23 @@ private _camp = [];
 // Helper: place a static object at bearing/distance from camp centre.
 private _fnc_place = {
     params ["_class", "_dist", "_bearing", "_dirOffset"];
+
     private _p = _objectivePos getPos [_dist, _bearing];
-    private _o = createVehicle [_class, _p, [], 0, "CAN_COLLIDE"];
+
+    private _o = createVehicle [
+        _class,
+        _p,
+        [],
+        0,
+        "CAN_COLLIDE"
+    ];
+
     _o setDir _dirOffset;
+
     _camp pushBack _o;
+
+    [_slot, _o] call RVG_fnc_registerMissionEntity;
+
     _o
 };
 
@@ -115,12 +130,16 @@ _evidence allowDamage false;
 _evidence enableSimulationGlobal true;
 _evidence setVariable ["RVG_investigateMission", _slot, true];
 
+[_slot, _evidence] call RVG_fnc_registerMissionEntity;
+
 // ---- Orange smoke signal -----------------------------------------------
 // One-shot grenade as the initial beacon. The campfire gives sustained
 // visibility (fire glow + smoke wisp) after the grenade fades.
 private _smoke = "SmokeShellOrange" createVehicle _objectivePos;
 _smoke setPosATL [_objectivePos select 0, _objectivePos select 1, 0.5];
 _camp pushBack _smoke;
+
+[_slot, _smoke] call RVG_fnc_registerMissionEntity;
 
 // ---- Announce -----------------------------------------------------------
 [format ["INVESTIGATE: Search the area around %1 for evidence.", _locationName]]

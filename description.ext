@@ -59,6 +59,10 @@ class CfgFunctions {
             class missionInit {};
             class scanLocations {};
             class generateMission {};
+
+            class registerMissionEntity {};
+            class registerMissionMarker {};
+            class clearMissionEntities {};
         };
 
         // =============================================================

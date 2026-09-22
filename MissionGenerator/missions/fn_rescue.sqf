@@ -25,6 +25,8 @@ _marker setMarkerType  "mil_dot";
 _marker setMarkerColor "ColorGreen";
 _marker setMarkerText  format ["RESCUE: %1", _locationName];
 
+[_slot, _markerName] call RVG_fnc_registerMissionMarker;
+
 // ---- Survivor position --------------------------------------------------
 // Manual safe-position search (avoids BIS_fnc_findSafePos spiral-out bug).
 private _spawnPos = [];
@@ -88,6 +90,8 @@ _survivor allowDamage true;
 _survivor setVariable ["RVG_rescueMission",  _slot, true];
 _survivor setVariable ["RVG_rescueSurvivor", true,  true];
 
+[_slot, _survivor] call RVG_fnc_registerMissionEntity;
+
 // --- Guards (same group) ---
 private _guards = [];
 for "_i" from 0 to 1 do {
@@ -106,7 +110,11 @@ for "_i" from 0 to 1 do {
     _g setDir (_g getDir _survivor);
 
     _guards pushBack _g;
+
+    [_slot, _g] call RVG_fnc_registerMissionEntity;
 };
+
+[_slot, _campGrp] call RVG_fnc_registerMissionEntity;
 
 // ---- HOLD waypoint — pins the whole camp in place ----------------------
 private _holdWp = _campGrp addWaypoint [_spawnPos, 0];
